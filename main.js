@@ -11,29 +11,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-const Role = db.role;
+const data = require('./app/seed');
 
-db.sequelize.sync({force: true})
+db.sequelize.sync({ force: true })
   .then(() => {
-    createRoles()
+    data.createRoles();
+    data.createProducts();
     console.log("Database connected...");
   })
   .catch((err) => {
     console.log("Failed database connection: " + err.message);
   });
-
-
-function createRoles() {
-  Role.create({
-    id: 1,
-    name: "user"
-  });
- 
-  Role.create({
-    id: 2,
-    name: "admin"
-  });
-}
 
 require("./app/routes/products")(app);
 require('./app/routes/auth')(app);

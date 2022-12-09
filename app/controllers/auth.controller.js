@@ -24,12 +24,25 @@ exports.register = (req, res) => {
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
+            res.send({ user: user, message: "User was registered successfully!" });
           });
         });
       } else {
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          var token = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 });
+          var authorities = [];
+          user.getRoles().then(roles => {
+            for (let i = 0; i < roles.length; i++) {
+              authorities.push(roles[i].name.toLowerCase());
+            }
+            res.status(200).send({
+              id: user.id,
+              nickname: user.nickname,
+              email: user.email,
+              roles: authorities,
+              accessToken: token
+            });
+          });
         });
       }
     })
@@ -41,7 +54,7 @@ exports.register = (req, res) => {
 exports.login = (req, res) => {
   User.findOne({
     where: {
-      username: req.body.username
+      email: req.body.email
     }
   })
     .then(user => {
@@ -57,22 +70,22 @@ exports.login = (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Invalid Email Or Password!"
         });
       }
 
       var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
+        expiresIn: 86400
       });
 
       var authorities = [];
       user.getRoles().then(roles => {
         for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+          authorities.push(roles[i].name.toLowerCase());
         }
         res.status(200).send({
           id: user.id,
-          username: user.username,
+          nickname: user.nickname,
           email: user.email,
           roles: authorities,
           accessToken: token
