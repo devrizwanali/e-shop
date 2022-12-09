@@ -7,27 +7,40 @@ var corsOptions = {
 
 const app = express();
 app.use(cors(corsOptions));
-// parse requests of content-type - application/json
 app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-// simple route
-
 
 const db = require("./app/models");
-db.sequelize.sync({ force: true })
+const Role = db.role;
+
+db.sequelize.sync({force: true})
   .then(() => {
+    createRoles()
     console.log("Database connected...");
   })
   .catch((err) => {
     console.log("Failed database connection: " + err.message);
   });
 
+
+function createRoles() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
+ 
+  Role.create({
+    id: 2,
+    name: "admin"
+  });
+}
+
 require("./app/routes/products")(app);
+require('./app/routes/auth')(app);
 
 
 app.get("/", (req, res) => {
- res.json({ message: "Hello EFREI Student - Your Server lives!!!"});
+ res.json({ message: "Server! I'm alive!!!"});
 });
 
 // set port, listen for requests

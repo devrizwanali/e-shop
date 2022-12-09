@@ -2,37 +2,35 @@ const db = require("../models");
 const Product = db.products;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Product
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
+  if (!req.body.name) {
     res.status(400).send({
-      message: "Content can not be empty!"
+      message: "name can not be empty!"
     });
     return;
   }
 
-  // Create a Tutorial
-  const tutorial = {
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published ? req.body.published : false
+  // Create a Product
+  const product = {
+    name: req.body.name,
+    price: req.body.price,
+    category: req.body.category
   };
 
-  // Save Tutorial in the database
-  Tutorial.create(tutorial)
+  // Save Product in the database
+  Product.create(product)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Tutorial."
+          err.message || "Some error occurred while creating the Product."
       });
     });
 };
 
-// Retrieve all Products from the database.
 exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
