@@ -13,10 +13,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false
     },
-    role: {
-      type: Sequelize.STRING,
-      defaultValue: 'user'
-    },
     active: {
       type: Sequelize.BOOLEAN,
       allowNull: false,

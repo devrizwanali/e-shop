@@ -3,7 +3,6 @@ const Product = db.products;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
-  // Validate request
   if (!req.body.name) {
     res.status(400).send({
       message: "name can not be empty!"
@@ -11,14 +10,12 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Product
   const product = {
     name: req.body.name,
     price: req.body.price,
     category: req.body.category
   };
 
-  // Save Product in the database
   Product.create(product)
     .then(data => {
       res.send(data);
@@ -46,7 +43,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
-// Find a single Product with an id
+
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
@@ -67,7 +64,6 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Update a Product by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
@@ -92,7 +88,6 @@ exports.update = (req, res) => {
     });
 };
 
-// Delete a Product with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 

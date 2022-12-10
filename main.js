@@ -11,20 +11,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-const data = require('./app/seed');
+const seed = require('./app/seed');
 
-db.sequelize.sync({ force: true })
+db.sequelize.sync()
   .then(() => {
-    data.createRoles();
-    data.createProducts();
+    // seed.createData()
     console.log("Database connected...");
   })
   .catch((err) => {
     console.log("Failed database connection: " + err.message);
   });
 
-require("./app/routes/products")(app);
 require('./app/routes/auth')(app);
+require("./app/routes/products")(app);
+require('./app/routes/user')(app);
+require('./app/routes/card')(app);
 
 
 app.get("/", (req, res) => {
