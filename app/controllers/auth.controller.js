@@ -40,7 +40,8 @@ exports.register = (req, res) => {
               nickname: user.nickname,
               email: user.email,
               roles: authorities,
-              accessToken: token
+              accessToken: token,
+              active: user.active
             });
           });
         });
@@ -88,7 +89,8 @@ exports.login = (req, res) => {
           nickname: user.nickname,
           email: user.email,
           roles: authorities,
-          accessToken: token
+          accessToken: token,
+          active: user.active
         });
       });
     })

@@ -5,39 +5,39 @@ const User = db.user;
 var bcrypt = require("bcryptjs");
 
 const createRoles = () => {
-  Role.create({
+  Role.findOrCreate({ where: {
     id: 1,
     name: "user"
-  });
+  }});
  
-  Role.create({
+  Role.findOrCreate({ where: {
     id: 2,
     name: "admin"
-  });
+  }});
 }
 
 const createProducts = () => {
-  Product.create({
-    name: 'T-shirts',
-    price: 30,
-    category: 'Mens',
-    rating: 4.5
-  });
+  Product.findOrCreate({ where: {
+      name: 'T-shirts',
+      price: 30,
+      category: 'Mens',
+      rating: 4.5
+    }});
 
-  Product.create({
+  Product.findOrCreate({ where: {
     name: 'Blue Jeans',
     price: 50,
     category: 'Mens',
     rating: 5
-  })
+  }})
 }
 
 const createAdmin = () => {
-  User.create({
-    nickname: 'John Doe',
+  const [user, created] = User.findOrCreate({ where: {
     email: 'john.doe@gmail.com',
-    password: bcrypt.hashSync('john@doe', 8)
-  }).then(user => {
+  }, defaults: {password: bcrypt.hashSync('john@doe', 8), nickname: 'John Doe' }})
+
+  if(!created) {
     user.setRoles([2]).then(userRole => {
       user.getRoles().then(roles => {
         for (let i = 0; i < roles.length; i++) {
@@ -45,7 +45,7 @@ const createAdmin = () => {
         }
       });
     })
-  })
+  }
 }
 
 const createData = () => {

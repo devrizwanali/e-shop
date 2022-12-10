@@ -15,7 +15,7 @@ const seed = require('./app/seed');
 
 db.sequelize.sync()
   .then(() => {
-    // seed.createData()
+    seed.createData()
     console.log("Database connected...");
   })
   .catch((err) => {
